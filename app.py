@@ -88,3 +88,9 @@ def delete_student(student_id):
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
+
+@app.route("/students/count", methods=["GET"])
+def get_students_count():
+    return jsonify({
+        "count": len(students)
+    })
