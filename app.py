@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__)
 
@@ -23,9 +23,7 @@ students = [
 
 @app.route("/")
 def home():
-    return jsonify({
-        "message": "Student REST API is running"
-    })
+    return render_template("index.html")
 
 
 @app.route("/students", methods=["GET"])
@@ -55,7 +53,10 @@ def create_student():
             "error": "name and group are required"
         }), 400
 
-    new_id = max([student["id"] for student in students], default=0) + 1
+    new_id = max(
+        [student["id"] for student in students],
+        default=0
+    ) + 1
 
     student = {
         "id": new_id,
@@ -86,4 +87,4 @@ def delete_student(student_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

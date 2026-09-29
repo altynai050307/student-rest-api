@@ -7,7 +7,7 @@ def test_home():
     response = client.get("/")
 
     assert response.status_code == 200
-    assert response.json["message"] == "Student REST API is running"
+    assert b"Student REST API" in response.data
 
 
 def test_get_students():

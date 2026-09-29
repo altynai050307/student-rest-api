@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student REST API</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        h2 {
+            margin-top: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+
+        .request {
+            margin-bottom: 25px;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        select {
+            width: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 9px 18px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        pre {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 15px;
+            min-height: 100px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .info {
+            background: #f7f7f7;
+            border-left: 4px solid #555;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Student REST API</h1>
+
+    <div class="info">
+        Simple interface for testing REST API requests.
+    </div>
+
+
+    <!-- GET ALL STUDENTS -->
+
+    <div class="request">
+
+        <h2>GET Students</h2>
+
+        <div class="row">
+
+            <select>
+                <option>GET</option>
+            </select>
+
+            <input
+                id="getUrl"
+                value="/students"
+            >
+
+        </div>
+
+        <button onclick="sendGet()">
+            Send
+        </button>
+
+    </div>
+
+
+    <!-- GET ONE STUDENT -->
+
+    <div class="request">
+
+        <h2>GET Student by ID</h2>
+
+        <div class="row">
+
+            <select>
+                <option>GET</option>
+            </select>
+
+            <input
+                id="getOneUrl"
+                value="/students/1"
+            >
+
+        </div>
+
+        <button onclick="sendGetOne()">
+            Send
+        </button>
+
+    </div>
+
+
+    <!-- POST -->
+
+    <div class="request">
+
+        <h2>POST Add Student</h2>
+
+        <div class="row">
+
+            <select>
+                <option>POST</option>
+            </select>
+
+            <input
+                value="/students"
+                readonly
+            >
+
+        </div>
+
+        <p>Request Body:</p>
+
+        <textarea id="postBody">{
+    "name": "Aruzhan",
+    "group": "IS-704"
+}</textarea>
+
+        <br>
+
+        <button onclick="sendPost()">
+            Send
+        </button>
+
+    </div>
+
+
+    <!-- DELETE -->
+
+    <div class="request">
+
+        <h2>DELETE Student</h2>
+
+        <div class="row">
+
+            <select>
+                <option>DELETE</option>
+            </select>
+
+            <input
+                id="deleteUrl"
+                value="/students/3"
+            >
+
+        </div>
+
+        <button onclick="sendDelete()">
+            Send
+        </button>
+
+    </div>
+
+
+    <!-- RESPONSE -->
+
+    <h2>Response</h2>
+
+    <div class="status" id="status">
+        Status: —
+    </div>
+
+    <pre id="response">Response will appear here...</pre>
+
+</div>
+
+
+<script>
+
+function showResponse(status, data) {
+
+    document.getElementById("status").textContent =
+        "Status: " + status;
+
+    document.getElementById("response").textContent =
+        JSON.stringify(data, null, 4);
+}
+
+
+/* GET /students */
+
+async function sendGet() {
+
+    const url = document.getElementById("getUrl").value;
+
+    try {
+
+        const response = await fetch(url);
+
+        const data = await response.json();
+
+        showResponse(response.status, data);
+
+    } catch (error) {
+
+        showResponse("Error", {
+            error: error.message
+        });
+
+    }
+}
+
+
+/* GET /students/1 */
+
+async function sendGetOne() {
+
+    const url = document.getElementById("getOneUrl").value;
+
+    try {
+
+        const response = await fetch(url);
+
+        const data = await response.json();
+
+        showResponse(response.status, data);
+
+    } catch (error) {
+
+        showResponse("Error", {
+            error: error.message
+        });
+
+    }
+}
+
+
+/* POST /students */
+
+async function sendPost() {
+
+    const body = document.getElementById("postBody").value;
+
+    try {
+
+        const jsonData = JSON.parse(body);
+
+        const response = await fetch("/students", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(jsonData)
+
+        });
+
+        const data = await response.json();
+
+        showResponse(response.status, data);
+
+    } catch (error) {
+
+        showResponse("Error", {
+            error: "Invalid JSON or request failed"
+        });
+
+    }
+}
+
+
+/* DELETE /students/3 */
+
+async function sendDelete() {
+
+    const url = document.getElementById("deleteUrl").value;
+
+    try {
+
+        const response = await fetch(url, {
+
+            method: "DELETE"
+
+        });
+
+        const data = await response.json();
+
+        showResponse(response.status, data);
+
+    } catch (error) {
+
+        showResponse("Error", {
+            error: error.message
+        });
+
+    }
+}
+
+</script>
+
+</body>
+</html>
